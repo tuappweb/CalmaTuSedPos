@@ -1,31 +1,88 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="es">
 <head>
-
-<title>CalmaTuSedPos</title>
-
+  <meta charset="UTF-8">
+  <!-- Clave para móviles: ancho real del dispositivo y uso de toda la pantalla (notch incluido) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Modo "app" al agregar a pantalla de inicio -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#ffffff">
+  <title>CalmaTuSedPos</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;           /* evita doble scroll (página + iframe) */
+      background: #ffffff;
+      overscroll-behavior: none;  /* evita "pull to refresh" accidental */
+    }
+    iframe {
+      position: fixed;
+      top: env(safe-area-inset-top, 0px);
+      left: env(safe-area-inset-left, 0px);
+      right: env(safe-area-inset-right, 0px);
+      bottom: env(safe-area-inset-bottom, 0px);
+      width: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+      height: calc(100% - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+      border: 0;
+    }
+    /* Botón de pantalla completa: solo se muestra si el navegador lo soporta */
+    #btnFs {
+      display: none;
+      position: fixed;
+      right: calc(12px + env(safe-area-inset-right, 0px));
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      z-index: 10;
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    #btnFs:focus-visible { outline: 3px solid #4a90e2; outline-offset: 2px; }
+  </style>
 </head>
-
 <body>
+  <iframe
+    src="https://script.google.com/macros/s/AKfycbytttcThniYsIyvs9a5dTFlEn-beFrDAPphp39d5FwZFHuzZZWfxpd1QPoAbc1maTP0/exec"
+    allow="fullscreen"
+    allowfullscreen
+    title="CalmaTuSedPos"></iframe>
 
-<iframe src="https://script.google.com/macros/s/AKfycbytttcThniYsIyvs9a5dTFlEn-beFrDAPphp39d5FwZFHuzZZWfxpd1QPoAbc1maTP0/exec" width="100%"
+  <button id="btnFs" type="button" aria-label="Pantalla completa">⛶</button>
 
-height="100%"
+  <script>
+    (function () {
+      var btn = document.getElementById('btnFs');
+      var root = document.documentElement;
+      var soporta = root.requestFullscreen || root.webkitRequestFullscreen;
+      var yaEsApp = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
 
-allowfullscreen="true"
+      if (!soporta || yaEsApp) return;   // iPhone no soporta fullscreen; ahí se usa "Agregar a inicio"
+      btn.style.display = 'block';
 
-style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none;"></iframe> <script>
+      function entrar() {
+        var p = root.requestFullscreen ? root.requestFullscreen() : root.webkitRequestFullscreen();
+        if (p && p.catch) p.catch(function (err) {
+          console.error('No se pudo activar pantalla completa: ' + err.message);
+        });
+      }
 
-window.onload = function() {
+      btn.addEventListener('click', entrar);
 
-document.querySelector('iframe').requestFullscreen().catch((err) => {
-
-console.error(`Error attempting to enable full-screen mode: ${err.message});
-
-</script>
-
+      function actualizar() {
+        var activo = document.fullscreenElement || document.webkitFullscreenElement;
+        btn.style.display = activo ? 'none' : 'block';
+      }
+      document.addEventListener('fullscreenchange', actualizar);
+      document.addEventListener('webkitfullscreenchange', actualizar);
+    })();
+  </script>
 </body>
-
 </html>
