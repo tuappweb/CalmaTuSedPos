@@ -29,60 +29,11 @@
       height: calc(100% - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
       border: 0;
     }
-    /* Botón de pantalla completa: solo se muestra si el navegador lo soporta */
-    #btnFs {
-      display: none;
-      position: fixed;
-      right: calc(12px + env(safe-area-inset-right, 0px));
-      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-      z-index: 10;
-      width: 44px;
-      height: 44px;
-      border: 0;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.55);
-      color: #fff;
-      font-size: 20px;
-      cursor: pointer;
-    }
-    #btnFs:focus-visible { outline: 3px solid #4a90e2; outline-offset: 2px; }
   </style>
 </head>
 <body>
   <iframe
     src="https://script.google.com/macros/s/AKfycbytttcThniYsIyvs9a5dTFlEn-beFrDAPphp39d5FwZFHuzZZWfxpd1QPoAbc1maTP0/exec"
-    allow="fullscreen"
-    allowfullscreen
     title="CalmaTuSedPos"></iframe>
-
-  <button id="btnFs" type="button" aria-label="Pantalla completa">⛶</button>
-
-  <script>
-    (function () {
-      var btn = document.getElementById('btnFs');
-      var root = document.documentElement;
-      var soporta = root.requestFullscreen || root.webkitRequestFullscreen;
-      var yaEsApp = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-
-      if (!soporta || yaEsApp) return;   // iPhone no soporta fullscreen; ahí se usa "Agregar a inicio"
-      btn.style.display = 'block';
-
-      function entrar() {
-        var p = root.requestFullscreen ? root.requestFullscreen() : root.webkitRequestFullscreen();
-        if (p && p.catch) p.catch(function (err) {
-          console.error('No se pudo activar pantalla completa: ' + err.message);
-        });
-      }
-
-      btn.addEventListener('click', entrar);
-
-      function actualizar() {
-        var activo = document.fullscreenElement || document.webkitFullscreenElement;
-        btn.style.display = activo ? 'none' : 'block';
-      }
-      document.addEventListener('fullscreenchange', actualizar);
-      document.addEventListener('webkitfullscreenchange', actualizar);
-    })();
-  </script>
 </body>
 </html>
